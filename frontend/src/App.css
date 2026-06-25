@@ -61,68 +61,6 @@ align-items: center;}
 }
 
 
-/* Carousel */
-.carousel-wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-
-.carousel-viewport {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 12px;
-  min-height: 220px;  
-}
-
-.carousel-empty, .carousel-single {
-  text-align: center;
-  padding: 40px;
-  background: white;
-  border-radius: 12px;
-  color: #64748b;
-  min-height: 220px;        
-  display: flex;            
-  align-items: center;      
-  justify-content: center;  
-}
-
-.carousel-track {
-  display: flex;
-  will-change: transform;
-}
-
-.carousel-slide {
-  min-width: 100%;
-}
-
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 1.4rem;
-  cursor: pointer;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.carousel-btn-left { left: -20px; }
-.carousel-btn-right { right: -20px; }
-.carousel-btn:hover { background: #4f46e5; color: white; }
-
-.carousel-dots { display: flex; gap: 8px; }
-
 .dot {
   width: 8px; height: 8px;
   border-radius: 50%;

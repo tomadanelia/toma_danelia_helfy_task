@@ -1,3 +1,4 @@
+
 .carousel-wrapper {
   position: relative;
   display: flex;
@@ -5,23 +6,27 @@
   align-items: center;
   gap: 16px;
   width: 100%;
+  max-width: 500px; 
+  margin: 0 auto;   
 }
 
 .carousel-viewport {
   width: 100%;
   overflow: hidden;
   border-radius: 12px;
+  min-height: 180px; /* Adjusted from 220px */
 }
+
+.carousel-slide {
+  flex: 0 0 80%;      /* Match the SLIDE_WIDTH = 80 from your JavaScript file */
+  max-width: 80%;
+  padding: 0 8px;     /* Adds a small gap between adjacent slides */
+}
+
 
 .carousel-track {
   display: flex;
   will-change: transform;
-}
-.carousel-slide {
-  flex: 0 0 80%;         
-  padding: 0 8px;
-  box-sizing: border-box;
-  transition: opacity 0.35s, transform 0.35s;
 }
 
 .carousel-slide:not(.active-slide) {
@@ -30,17 +35,20 @@
   pointer-events: none;
 }
 
-.carousel-empty,
-.carousel-single {
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 220px;
+
+.carousel-empty, .carousel-single {
+  text-align: center;
+  padding: 24px;
   background: white;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+  color: #64748b;
+  min-height: 180px; 
+  display: flex;            
+  align-items: center;      
+  justify-content: center;  
+  width: 100%;
+  max-width: 400px; 
+  margin: 0 auto;
 }
 
 .carousel-empty p {
