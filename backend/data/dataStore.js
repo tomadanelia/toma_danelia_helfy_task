@@ -9,14 +9,16 @@ function getTaskById(id) {
   return tasks.find(task => task.id === id);
 }
 
-function createTask({ title, descr, priority }) {
+function createTask({ title, descr, priority , dueDate }) {
   const task = {
     id: baseId++,
     title,
     description: descr || '',
     completed: false,
     createdAt: new Date(),
-    priority: priority || 'low'
+    priority: priority || 'low',
+    dueDate: dueDate || null 
+
   };
 
   tasks.push(task);

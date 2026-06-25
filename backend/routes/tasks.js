@@ -19,7 +19,7 @@ createdAt: Date,
 priority: 'low' | 'medium' | 'high'
 }*/
 router.post('/', (req, res) => {
-  const { title, description, priority } = req.body;
+  const { title, description, priority, dueDate } = req.body;
 
   if (!title || typeof title !== 'string' || title.trim() === '') {
     return res.status(400).json({ error: 'Title is required field' });
@@ -28,11 +28,14 @@ router.post('/', (req, res) => {
   if (priority && !PRIORITY.includes(priority)) {
     return res.status(400).json({ error: 'priority must be valid type: low,medium or high' });
   }
-
+  if (dueDate && isNaN(Date.parse(dueDate))) {
+    return res.status(400).json({ error: 'dueDate must be a valid date' });
+  }
   const task = createTask({
     title: title.trim(),
     descr: description,
-    priority
+    priority,
+    dueDate: dueDate || null,
   });
   res.status(201).json(task);
 });
@@ -40,7 +43,7 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const id = Number(req.params.id);
-  const { title, description, priority, completed } = req.body;
+  const { title, description, priority, completed, dueDate } = req.body;
   let task= getTaskById(id);
   if (!task) {
     return res.status(404).json({ error: 'Task not found' });
@@ -59,6 +62,7 @@ router.put('/:id', (req, res) => {
   if (description !== undefined) updateData.description = description;
   if (priority !== undefined) updateData.priority = priority;
   if (completed !== undefined) updateData.completed = Boolean(completed);
+  if (dueDate !== undefined) updateData.dueDate = dueDate || null;
 
   const updated = updateTask(id, updateData);
   res.json(updated);

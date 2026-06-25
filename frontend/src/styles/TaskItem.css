@@ -7,19 +7,25 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: 100%;        
+  height: auto; 
 }
+
+.task-description {
+  color: #64748b;
+  font-size: 0.95rem;
+  flex: 1;
+  white-space: pre-wrap;       
+  overflow-wrap: break-word;  
+  word-break: break-word;      
+}
+
 
 .task-title {
   font-size: 1.1rem;   
   font-weight: 600;
 }
 
-.task-description {
-  color: #64748b;
-  font-size: 0.9rem;  
-  flex: 1;
-}
+
 .task-item.completed {
   opacity: 0.7;
 }

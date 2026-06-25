@@ -94,7 +94,6 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggle }) {
       </div>
 
       <button className="carousel-btn carousel-btn-right" onClick={goNext}>›</button>
-
       <div className="carousel-dots">
         {tasks.map((_, i) => (
           <span
