@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import TaskItem from './TaskItem';
 import '../styles/TaskList.css';
 
-const SLIDE_WIDTH = 80;   
-const OFFSET = (100 - SLIDE_WIDTH) / 2;  
+const SLIDE_WIDTH = 80;
+const OFFSET = (100 - SLIDE_WIDTH) / 2;
 
 export default function TaskList({ tasks, onEdit, onDelete, onToggle }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -40,10 +40,13 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggle }) {
   const clonedIndex = currentIndex + 1;
   const translateX = -(clonedIndex * SLIDE_WIDTH) + OFFSET;
 
+
+
   function goTo(nextIdx, afterJump) {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setCurrentIndex(nextIdx);
+
     timeoutRef.current = setTimeout(() => {
       setIsTransitioning(false);
       if (afterJump !== undefined) setCurrentIndex(afterJump);
@@ -83,10 +86,10 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggle }) {
           }}
         >
           {cloned.map((task, i) => (
-             <div
-    className={`carousel-slide${i === clonedIndex ? ' active-slide' : ''}`}
-    key={`${task.id}-${i}`}
-  >
+            <div
+              className={`carousel-slide${i === clonedIndex ? ' active-slide' : ''}`}
+              key={`${task.id}-${i}`}
+            >
               <TaskItem task={task} onEdit={onEdit} onDelete={onDelete} onToggle={onToggle} />
             </div>
           ))}
@@ -94,6 +97,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onToggle }) {
       </div>
 
       <button className="carousel-btn carousel-btn-right" onClick={goNext}>›</button>
+
       <div className="carousel-dots">
         {tasks.map((_, i) => (
           <span
