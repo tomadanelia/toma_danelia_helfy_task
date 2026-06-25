@@ -1,6 +1,5 @@
 import express from 'express';
-import {getAll,getTaskById, createTask, updateTask,deleteTask,toggleTask
-} from '../data/store.js';
+import {getAll,getTaskById, createTask, updateTask,deleteTask,toggleTask} from '../data/dataStore.js';
 const router = express.Router();
 
 const PRIORITY = ['low', 'medium', 'high'];
@@ -32,10 +31,9 @@ router.post('/', (req, res) => {
 
   const task = createTask({
     title: title.trim(),
-    description,
+    descr: description,
     priority
   });
-
   res.status(201).json(task);
 });
 

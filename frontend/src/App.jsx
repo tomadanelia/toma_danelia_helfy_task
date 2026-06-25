@@ -1,122 +1,139 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from 'react';
+import TaskList from './components/TaskList';
+import TaskForm from './components/TaskForm';
+import TaskFilter from './components/TaskFilter';
+import { fetchTasks, createTask, updateTask, deleteTask, toggleTask } from './services/api';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [tasks, setTasks] = useState([]);
+  const [filter, setFilter] = useState('all');
+  const [editingTask, setEditingTask] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  async function loadTasks() {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await fetchTasks();
+      setTasks(data);
+    } catch (err) {
+      setError('could not load any tasks server may be crushed');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleCreate(formData) {
+    try {
+      const task = await createTask(formData);
+      setTasks(prev => [...prev, task]);
+      setShowForm(false);
+    } catch (err) {
+      setError('failed to create the task');
+    }
+  }
+
+  async function handleUpdate(formData) {
+    try {
+      const updated = await updateTask(editingTask.id, formData);
+      setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
+      setEditingTask(null);
+      setShowForm(false);
+    } catch (err) {
+      setError('failed to update the task');
+    }
+  }
+
+  async function handleDelete(id) {
+    if (!window.confirm('Delete this task?')) return;
+    try {
+      await deleteTask(id);
+      setTasks(prev => prev.filter(t => t.id !== id));
+    } catch (err) {
+      setError('failed to delete the task');
+    }
+  }
+
+  async function handleToggle(id) {
+    try {
+      const updated = await toggleTask(id);
+      setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
+    } catch (err) {
+      setError('failed to toggle task completion');
+    }
+  }
+
+  function handleEdit(task) {
+    setEditingTask(task);
+    setShowForm(true);
+  }
+
+  function handleFormClose() {
+    setEditingTask(null);
+    setShowForm(false);
+  }
+
+  const filteredTasks = tasks.filter(t => {
+    if (filter === 'completed') return t.completed;
+    if (filter === 'pending') return !t.completed;
+    return true;
+  });
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+        <h1>Task Manager</h1>
+
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
+      </header>
+
+      {error && (
+        <div className="error-banner">
+          {error}
+          <button onClick={() => setError(null)}>✕</button>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+      )}
+
+      <TaskFilter current={filter} onChange={setFilter} />
+
+      {showForm && (
+        <div className="modal-overlay" onClick={handleFormClose}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <TaskForm
+              initial={editingTask}
+              onSubmit={editingTask ? handleUpdate : handleCreate}
+              onCancel={handleFormClose}
+            />
+          </div>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="loading">Loading tasks...</div>
+      ) : (
+        <TaskList
+          tasks={filteredTasks}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onToggle={handleToggle}
+        />
+      )}
+      <div className="new-task-div">
+        <p>Manage your tasks</p>
+         <button className="btn-primary" onClick={() => setShowForm(true)}>
+        New Task
         </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+       
+    </div>
+  );
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
 }
-
-export default App
